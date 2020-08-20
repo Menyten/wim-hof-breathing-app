@@ -1,35 +1,48 @@
 import React, { useState, useEffect } from "react";
+import formatTimeLeft from "./utils/formatTimeLeft";
 import S from "./elements";
+import BreathingCircle from "./components/breathingCircle";
+import Countdown from "./components/countdown";
 
 const App = () => {
   const [running, setRunning] = useState(false);
   const [rounds, setRounds] = useState(3);
-  const [breaths, setBreaths] = useState(30);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [totalBreaths, setTotalBreaths] = useState(5);
   const [breathCount, setBreathCount] = useState(0);
   const [breathHoldTime, setBreathHoldTime] = useState(60000);
   const [breathing, setBreathing] = useState(true);
-  const [breathingTime, setBreathingTime] = useState(2000);
+  const [breathingTime, setBreathingTime] = useState(1500);
   const [timeouts, setTimeouts] = useState([]);
-  let test = 0;
 
   useEffect(() => {
-    if (running) {
-      const changeCircleAnimation = () => {
+    if (breathCount < totalBreaths) {
+      breathing && setBreathCount((breathCount) => breathCount + 1);
+    }
+  }, [breathing]);
+
+  useEffect(() => {
+    console.log("BREATHCOUNT", breathCount);
+    if (breathCount === totalBreaths) {
+      const id = setInterval(() => {
+        setBreathHoldTime((breathHoldTime) => breathHoldTime - 1000);
+      }, 1000);
+    }
+  }, [breathCount]);
+
+  const changeCircleAnimation = () => {
+    addTimeoutToArray(
+      setTimeout(() => {
+        setBreathing(false);
         addTimeoutToArray(
           setTimeout(() => {
-            setBreathing(false);
-            addTimeoutToArray(
-              setTimeout(() => {
-                setBreathing(true);
-                changeCircleAnimation();
-              }, breathingTime)
-            );
+            setBreathing(true);
+            changeCircleAnimation();
           }, breathingTime)
         );
-      };
-      changeCircleAnimation();
-    }
-  }, [running, breathingTime]);
+      }, breathingTime)
+    );
+  };
 
   const addTimeoutToArray = (id) => setTimeouts([...timeouts, id]);
   const clearAllTimeouts = () => {
@@ -37,22 +50,28 @@ const App = () => {
     setTimeouts([]);
   };
 
-  const startSession = () => setRunning(true);
+  const startSession = () => {
+    setRunning(true);
+    changeCircleAnimation();
+  };
   const stopSession = () => {
-    clearAllTimeouts();
     setRunning(false);
+    clearAllTimeouts();
   };
 
   return (
     <S.Background>
       <S.Container>
         <S.Title>Wim Hof Breathing</S.Title>
-        {running ? (
-          <S.Circle>
-            <S.CircleText>{breathCount}</S.CircleText>
-          </S.Circle>
-        ) : (
-          "Adjust settings and press start"
+        {breathCount !== totalBreaths && (
+          <BreathingCircle
+            running={running}
+            breathingTime={breathingTime}
+            breathCount={breathCount}
+          />
+        )}
+        {breathCount === totalBreaths && (
+          <Countdown breathHoldTime={breathHoldTime} />
         )}
         <S.ButtonContainer>
           {!running && (

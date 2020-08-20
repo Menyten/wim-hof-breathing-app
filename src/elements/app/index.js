@@ -39,11 +39,16 @@ const Circle = styled.section`
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  animation: ${breathingAnimation} 2s ease-in-out infinite;
+  animation: ${breathingAnimation} ${({ time }) => time}ms ease-in-out infinite;
   animation-direction: alternate;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const CountdownTime = styled.p`
+  color: #99fadc;
+  font-size: 3rem;
 `;
 
 const CircleText = styled.p`
@@ -88,6 +93,8 @@ export default {
   Title,
   Circle,
   CircleText,
+
+  CountdownTime,
   ButtonContainer,
   PrimaryButton,
   SecondaryButton,
