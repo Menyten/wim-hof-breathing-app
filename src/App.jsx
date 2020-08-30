@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import formatTimeLeft from "./utils/formatTimeLeft";
 import S from "./elements";
 import BreathingCircle from "./components/breathingCircle";
 import Countdown from "./components/countdown";
 
 const App = () => {
   const [running, setRunning] = useState(false);
-  const [rounds, setRounds] = useState(3);
   const [currentRound, setCurrentRound] = useState(1);
-  const [totalBreaths, setTotalBreaths] = useState(5);
+  const [totalRounds, setTotalRounds] = useState(3);
+  const [totalBreaths, setTotalBreaths] = useState(2);
   const [breathCount, setBreathCount] = useState(0);
-  const [breathHoldTime, setBreathHoldTime] = useState(60000);
+  const [breathHoldTime, setBreathHoldTime] = useState(1000);
   const [breathing, setBreathing] = useState(true);
   const [breathingTime, setBreathingTime] = useState(1500);
   const [timeouts, setTimeouts] = useState([]);
+  const [breathHoldIntervalId, setBreathHoldIntervalId] = useState("");
 
   useEffect(() => {
     if (breathCount < totalBreaths) {
@@ -27,8 +27,25 @@ const App = () => {
       const id = setInterval(() => {
         setBreathHoldTime((breathHoldTime) => breathHoldTime - 1000);
       }, 1000);
+      setBreathHoldIntervalId(id);
     }
   }, [breathCount]);
+
+  useEffect(() => {
+    console.log("breathHoldTime", breathHoldTime);
+    if (!breathHoldTime) {
+      if (currentRound === totalRounds) {
+        stopSession();
+        setCurrentRound(1);
+      } else {
+        setCurrentRound(currentRound + 1);
+      }
+      console.log(currentRound);
+      setBreathCount(0);
+      setBreathHoldTime(1000);
+      clearInterval(breathHoldIntervalId);
+    }
+  }, [breathHoldTime]);
 
   const changeCircleAnimation = () => {
     addTimeoutToArray(
