@@ -5,98 +5,93 @@ import Countdown from "./components/countdown";
 
 const App = () => {
   const [running, setRunning] = useState(false);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [totalRounds, setTotalRounds] = useState(3);
+  const [breathIn, setBreathIn] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(0);
+  const [breathingSpeed, setBreathingSpeed] = useState(1500);
   const [totalBreaths, setTotalBreaths] = useState(2);
-  const [breathCount, setBreathCount] = useState(0);
-  const [breathHoldTime, setBreathHoldTime] = useState(1000);
-  const [breathing, setBreathing] = useState(true);
-  const [breathingTime, setBreathingTime] = useState(1500);
-  const [timeouts, setTimeouts] = useState([]);
-  const [breathHoldIntervalId, setBreathHoldIntervalId] = useState("");
+  const [breathCount, setBreathCount] = useState(1);
+
+  const [countdown, setCountdown] = useState(false);
+  const [breathHoldTime, setBreathHoldTime] = useState(2000);
+
+  const [breathInHoldCountdown, setBreathInHoldCountdown] = useState(false);
+  const [breathInHoldTime, setBreathInHoldTime] = useState(15000);
 
   useEffect(() => {
+    if (!running) return;
+    const handleBreathCountIncrease = () => {
+      const id = setTimeout(() => {
+        setBreathIn(true);
+        console.log("object");
+        setTimeout(() => {
+          setBreathIn(false);
+          setTimeoutId(handleBreathCountIncrease());
+        }, breathingSpeed);
+      }, breathingSpeed);
+      return id;
+    };
+    handleBreathCountIncrease();
+    console.log("First Effect");
+  }, [running, breathingSpeed]);
+
+  useEffect(() => {
+    if (countdown || breathInHoldCountdown) {
+      console.log(timeoutId);
+      clearTimeout(timeoutId);
+    }
+  }, [timeoutId, countdown, breathInHoldCountdown]);
+
+  useEffect(() => {
+    if (!running) return;
+    if (breathInHoldCountdown) return;
+    if (breathIn) return;
+    const incrementBreathCount = () => setBreathCount(breathCount + 1);
     if (breathCount < totalBreaths) {
-      breathing && setBreathCount((breathCount) => breathCount + 1);
+      incrementBreathCount();
+    } else {
+      setCountdown(true);
     }
-  }, [breathing]);
+    console.log("Second Effect");
+    /* eslint-disable-next-line */
+  }, [breathIn]);
 
   useEffect(() => {
-    console.log("BREATHCOUNT", breathCount);
-    if (breathCount === totalBreaths) {
-      const id = setInterval(() => {
-        setBreathHoldTime((breathHoldTime) => breathHoldTime - 1000);
-      }, 1000);
-      setBreathHoldIntervalId(id);
+    if (!countdown) return;
+    if (breathHoldTime) {
+      setTimeout(() => setBreathHoldTime(breathHoldTime - 1000), 1000);
+    } else {
+      setCountdown(false);
+      setBreathInHoldCountdown(true);
     }
-  }, [breathCount]);
+    console.log("Third Effect");
+  }, [countdown, breathHoldTime]);
 
   useEffect(() => {
-    console.log("breathHoldTime", breathHoldTime);
-    if (!breathHoldTime) {
-      if (currentRound === totalRounds) {
-        stopSession();
-        setCurrentRound(1);
-      } else {
-        setCurrentRound(currentRound + 1);
-      }
-      console.log(currentRound);
-      setBreathCount(0);
-      setBreathHoldTime(1000);
-      clearInterval(breathHoldIntervalId);
+    if (!breathInHoldCountdown) return;
+    if (breathInHoldTime) {
+      setTimeout(() => setBreathInHoldTime(breathInHoldTime - 1000), 1000);
     }
-  }, [breathHoldTime]);
+    console.log("Fourth Effect");
+  }, [breathInHoldCountdown, breathInHoldTime]);
 
-  const changeCircleAnimation = () => {
-    addTimeoutToArray(
-      setTimeout(() => {
-        setBreathing(false);
-        addTimeoutToArray(
-          setTimeout(() => {
-            setBreathing(true);
-            changeCircleAnimation();
-          }, breathingTime)
-        );
-      }, breathingTime)
-    );
-  };
-
-  const addTimeoutToArray = (id) => setTimeouts([...timeouts, id]);
-  const clearAllTimeouts = () => {
-    timeouts.forEach((id) => clearTimeout(id));
-    setTimeouts([]);
-  };
-
-  const startSession = () => {
-    setRunning(true);
-    changeCircleAnimation();
-  };
-  const stopSession = () => {
-    setRunning(false);
-    clearAllTimeouts();
-  };
+  const startSession = () => setRunning(true);
 
   return (
     <S.Background>
       <S.Container>
         <S.Title>Wim Hof Breathing</S.Title>
-        {breathCount !== totalBreaths && (
+        {!breathInHoldCountdown && !countdown && (
           <BreathingCircle
             running={running}
-            breathingTime={breathingTime}
+            breathingSpeed={breathingSpeed}
             breathCount={breathCount}
           />
         )}
-        {breathCount === totalBreaths && (
-          <Countdown breathHoldTime={breathHoldTime} />
-        )}
+        {countdown && <Countdown time={breathHoldTime} />}
+        {breathInHoldCountdown && <Countdown time={breathInHoldTime} />}
         <S.ButtonContainer>
-          {!running && (
-            <S.PrimaryButton onClick={startSession}>Start</S.PrimaryButton>
-          )}
-          {running && (
-            <S.PrimaryButton onClick={stopSession}>Stop</S.PrimaryButton>
-          )}
+          <S.PrimaryButton onClick={startSession}>Start</S.PrimaryButton>
+
           <S.SecondaryButton>Settings</S.SecondaryButton>
         </S.ButtonContainer>
       </S.Container>
