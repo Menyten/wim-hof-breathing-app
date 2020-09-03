@@ -7,6 +7,8 @@ const App = () => {
   const [running, setRunning] = useState(false);
   const [breathIn, setBreathIn] = useState(false);
   const [timeoutId, setTimeoutId] = useState(0);
+  const [totalRounds, setTotalRounds] = useState(3);
+  const [currentRound, setCurrentRound] = useState(1);
   const [breathingSpeed, setBreathingSpeed] = useState(1500);
   const [totalBreaths, setTotalBreaths] = useState(2);
   const [breathCount, setBreathCount] = useState(1);
@@ -22,7 +24,6 @@ const App = () => {
     const handleBreathCountIncrease = () => {
       const id = setTimeout(() => {
         setBreathIn(true);
-        console.log("object");
         setTimeout(() => {
           setBreathIn(false);
           setTimeoutId(handleBreathCountIncrease());
@@ -31,12 +32,10 @@ const App = () => {
       return id;
     };
     handleBreathCountIncrease();
-    console.log("First Effect");
-  }, [running, breathingSpeed]);
+  }, [running, breathingSpeed, currentRound, totalRounds]);
 
   useEffect(() => {
     if (countdown || breathInHoldCountdown) {
-      console.log(timeoutId);
       clearTimeout(timeoutId);
     }
   }, [timeoutId, countdown, breathInHoldCountdown]);
@@ -51,7 +50,6 @@ const App = () => {
     } else {
       setCountdown(true);
     }
-    console.log("Second Effect");
     /* eslint-disable-next-line */
   }, [breathIn]);
 
@@ -63,18 +61,37 @@ const App = () => {
       setCountdown(false);
       setBreathInHoldCountdown(true);
     }
-    console.log("Third Effect");
   }, [countdown, breathHoldTime]);
 
   useEffect(() => {
     if (!breathInHoldCountdown) return;
     if (breathInHoldTime) {
       setTimeout(() => setBreathInHoldTime(breathInHoldTime - 1000), 1000);
+    } else {
+      if (currentRound < totalRounds) {
+        resetValues();
+        setCurrentRound(currentRound + 1);
+      } else {
+        stopSession();
+      }
     }
-    console.log("Fourth Effect");
+    /* eslint-disable-next-line */
   }, [breathInHoldCountdown, breathInHoldTime]);
 
+  const resetValues = () => {
+    setBreathIn(false);
+    setCountdown(false);
+    setBreathInHoldCountdown(false);
+    setBreathCount(1);
+    setBreathHoldTime(2000);
+    setBreathInHoldTime(15000);
+  };
+
   const startSession = () => setRunning(true);
+  const stopSession = () => {
+    setRunning(false);
+    resetValues();
+  };
 
   return (
     <S.Background>
@@ -90,7 +107,12 @@ const App = () => {
         {countdown && <Countdown time={breathHoldTime} />}
         {breathInHoldCountdown && <Countdown time={breathInHoldTime} />}
         <S.ButtonContainer>
-          <S.PrimaryButton onClick={startSession}>Start</S.PrimaryButton>
+          {!running && (
+            <S.PrimaryButton onClick={startSession}>Start</S.PrimaryButton>
+          )}
+          {running && (
+            <S.PrimaryButton onClick={stopSession}>Stop</S.PrimaryButton>
+          )}
 
           <S.SecondaryButton>Settings</S.SecondaryButton>
         </S.ButtonContainer>
