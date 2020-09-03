@@ -19,12 +19,14 @@ const Background = styled.div`
 `;
 
 const Container = styled.section`
+  position: relative;
   height: 100%;
   width: 100%;
   max-width: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 `;
 
 const Title = styled.h1`
@@ -87,15 +89,26 @@ const SecondaryButton = styled.button`
   box-sizing: border-box;
 `;
 
+const Settings = styled.section`
+  position: absolute;
+  background-color: #99fadc;
+  width: 100%;
+  height: 40vh;
+  bottom: ${({ open }) => (open ? 0 : "-1000px")};
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s;
+`;
+
 export default {
   Background,
   Container,
   Title,
   Circle,
   CircleText,
-
   CountdownTime,
   ButtonContainer,
   PrimaryButton,
   SecondaryButton,
+  Settings,
 };

@@ -4,6 +4,7 @@ import BreathingCircle from "./components/breathingCircle";
 import Countdown from "./components/countdown";
 
 const App = () => {
+  const [settings, setSettings] = useState(false);
   const [running, setRunning] = useState(false);
   const [breathIn, setBreathIn] = useState(false);
   const [timeoutId, setTimeoutId] = useState(0);
@@ -93,6 +94,8 @@ const App = () => {
     resetValues();
   };
 
+  const openSettings = () => setSettings(true);
+
   return (
     <S.Background>
       <S.Container>
@@ -114,8 +117,9 @@ const App = () => {
             <S.PrimaryButton onClick={stopSession}>Stop</S.PrimaryButton>
           )}
 
-          <S.SecondaryButton>Settings</S.SecondaryButton>
+          <S.SecondaryButton onClick={openSettings}>Settings</S.SecondaryButton>
         </S.ButtonContainer>
+        <S.Settings open={settings} />
       </S.Container>
     </S.Background>
   );
