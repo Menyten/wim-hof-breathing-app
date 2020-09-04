@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import S from "./elements";
 import BreathingCircle from "./components/breathingCircle";
 import Countdown from "./components/countdown";
+import Settings from "./components/settings";
 
 const App = () => {
   const [settings, setSettings] = useState(false);
@@ -119,7 +120,18 @@ const App = () => {
 
           <S.SecondaryButton onClick={openSettings}>Settings</S.SecondaryButton>
         </S.ButtonContainer>
-        <S.Settings open={settings} />
+        <Settings
+          open={settings}
+          setSettings={setSettings}
+          totalRounds={totalRounds}
+          breathingSpeed={breathingSpeed}
+          totalBreaths={totalBreaths}
+          breathHoldTime={breathHoldTime}
+          setTotalRounds={setTotalRounds}
+          setBreathingSpeed={setBreathingSpeed}
+          setTotalBreaths={setTotalBreaths}
+          setBreathHoldTime={setBreathHoldTime}
+        />
       </S.Container>
     </S.Background>
   );

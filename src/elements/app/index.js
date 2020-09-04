@@ -73,8 +73,10 @@ const PrimaryButton = styled.button`
   font-weight: 700;
   text-transform: uppercase;
   padding: 0.5rem 2rem;
-  border: none;
+  border: 1px solid #1184e8;
   border-radius: 5px;
+  ${({ fullWidth }) => (fullWidth ? "width: 100%;" : "")}
+  ${({ bottom }) => (bottom ? "margin-top: auto;" : "")}
 `;
 
 const SecondaryButton = styled.button`
@@ -93,11 +95,63 @@ const Settings = styled.section`
   position: absolute;
   background-color: #99fadc;
   width: 100%;
-  height: 40vh;
+  height: 100%;
+  padding: 0 1rem 1rem;
   bottom: ${({ open }) => (open ? 0 : "-1000px")};
   border-radius: 5px 5px 0 0;
   box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.5);
   transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SettingsTitle = styled.h2`
+  color: #1184e8;
+  font-weight: 700;
+  margin: 1rem 0;
+`;
+
+const InputGroup = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+`;
+
+const Input = styled.input`
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1rem;
+  margin: 0;
+  background: #1184e8;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+  border-radius: 1rem;
+  ::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    background: #99fadc;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  ::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    background: #99fadc;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+`;
+
+const InputLabel = styled.label`
+  color: #1184e8;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 `;
 
 export default {
@@ -111,4 +165,8 @@ export default {
   PrimaryButton,
   SecondaryButton,
   Settings,
+  SettingsTitle,
+  InputGroup,
+  Input,
+  InputLabel,
 };
