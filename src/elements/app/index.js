@@ -30,10 +30,16 @@ const Container = styled.section`
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #99fadc;
   margin: 2rem 0 12rem 0;
+`;
+
+const Text = styled.p`
+  color: #99fadc;
+  font-size: 1.2rem;
+  font-weight: 700;
 `;
 
 const Circle = styled.section`
@@ -76,7 +82,10 @@ const PrimaryButton = styled.button`
   border: 1px solid #1184e8;
   border-radius: 5px;
   ${({ fullWidth }) => (fullWidth ? "width: 100%;" : "")}
-  ${({ bottom }) => (bottom ? "margin-top: auto;" : "")}
+  ${({ fullWidth }) => (fullWidth ? "margin: 0 0.5rem;" : "")}
+  ${({
+    bottom,
+  }) => (bottom ? "margin-top: auto;" : "")}
 `;
 
 const SecondaryButton = styled.button`
@@ -97,7 +106,7 @@ const Settings = styled.section`
   width: 100%;
   height: 100%;
   padding: 0 1rem 1rem;
-  bottom: ${({ open }) => (open ? 0 : "-1000px")};
+  bottom: ${({ open }) => (open ? 0 : "-10000px")};
   border-radius: 5px 5px 0 0;
   box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.5);
   transition: all 0.3s;
@@ -158,6 +167,7 @@ export default {
   Background,
   Container,
   Title,
+  Text,
   Circle,
   CircleText,
   CountdownTime,

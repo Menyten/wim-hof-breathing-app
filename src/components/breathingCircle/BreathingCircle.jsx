@@ -7,7 +7,7 @@ const BreathingCircle = ({ running, breathingSpeed, breathCount }) =>
       <S.CircleText>{breathCount ?? 0}</S.CircleText>
     </S.Circle>
   ) : (
-    "Adjust settings and press start"
+    <S.Text>Adjust settings and press start</S.Text>
   );
 
 export default BreathingCircle;
