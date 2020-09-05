@@ -60,8 +60,10 @@ const App = () => {
     if (breathHoldTime) {
       setTimeout(() => setBreathHoldTime(breathHoldTime - 1000), 1000);
     } else {
-      setCountdown(false);
-      setBreathInHoldCountdown(true);
+      setTimeout(() => {
+        setCountdown(false);
+        setBreathInHoldCountdown(true);
+      }, 1000);
     }
   }, [countdown, breathHoldTime]);
 
@@ -71,8 +73,10 @@ const App = () => {
       setTimeout(() => setBreathInHoldTime(breathInHoldTime - 1000), 1000);
     } else {
       if (currentRound < totalRounds) {
-        resetValues();
-        setCurrentRound(currentRound + 1);
+        setTimeout(() => {
+          resetValues();
+          setCurrentRound(currentRound + 1);
+        }, 1000);
       } else {
         stopSession();
       }
